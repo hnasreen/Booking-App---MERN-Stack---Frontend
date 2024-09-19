@@ -1,9 +1,10 @@
 import PhotosUploader from "../Helpers/PhotosUploader.jsx";
 import Perks from "../Components/Perks.jsx";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import AccountNav from "../Helpers/AccountNav.jsx";
 import { Navigate, useParams } from "react-router-dom";
+import { UserContext } from "../Context/UserContext.jsx";
 
 const PlacesFormPage = () => {
   const { id } = useParams();
@@ -18,11 +19,12 @@ const PlacesFormPage = () => {
   const [maxGuests, setMaxGuests] = useState(1);
   const [price, setPrice] = useState(100);
   const [redirect, setRedirect] = useState(false);
+  const {token}=useContext(UserContext)
   useEffect(() => {
     if (!id) {
       return;
     }
-    axios.get('/places/' + id).then(response => {
+    axios.get('/places/' + id,{headers:{"content-type":"application/json",Authorization:`Bearer ${token}`}}).then(response => {
       const { data } = response;
       setTitle(data.title);
       setAddress(data.address);
@@ -66,11 +68,11 @@ const PlacesFormPage = () => {
       // update
       await axios.put('/places', {
         id, ...placeData
-      });
+      },{headers:{"content-type":"application/json",Authorization:`Bearer ${token}`}});
       setRedirect(true);
     } else {
       // new place
-      await axios.post('/places', placeData);
+      await axios.post('/places', placeData,{headers:{"content-type":"application/json",Authorization:`Bearer ${token}`}});
       setRedirect(true);
     }
 

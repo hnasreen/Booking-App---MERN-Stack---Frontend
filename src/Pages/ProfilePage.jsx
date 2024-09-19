@@ -7,16 +7,34 @@ import AccountNav from "../Helpers/AccountNav.jsx";
 
 const ProfilePage = () => {
     const [redirect, setRedirect] = useState(null);
-    const { ready, user, setUser } = useContext(UserContext);
+    const { setToken, ready, user, setUser } = useContext(UserContext);
     let { subpage } = useParams();
     if (subpage === undefined) {
         subpage = 'profile';
     }
 
     const logout = async () => {
-        await axios.post('/logout');
-        setRedirect('/');
-        setUser(null);
+    
+       
+
+        try {
+            // Clear token from local storage
+            localStorage.removeItem('token');
+        
+            // Reset token in context
+            setToken(null);
+            
+        
+            // Show success toast
+            alert("Logged out successfully");
+        
+          } catch (error) {
+            console.error("Error during logout:", error);
+            
+          }
+          setRedirect('/');
+          setUser(null);
+      
     }
 
     if (!ready) {

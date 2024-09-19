@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Image from "../Helpers/Image.jsx";
+import { UserContext } from "../Context/UserContext.jsx";
 
 const IndexPage = () => {
   const [places, setPlaces] = useState([]);
+  const {token}= useContext(UserContext)
   useEffect(() => {
-    axios.get('/places').then(response => {
+    axios.get('/places',{headers:{"content-type":"application/json",Authorization:`Bearer ${token}`}}).then(response => {
       setPlaces(response.data);
     });
   }, []);

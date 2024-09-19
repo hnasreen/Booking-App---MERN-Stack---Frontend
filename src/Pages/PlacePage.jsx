@@ -1,18 +1,20 @@
 import {Link, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import BookingWidget from "../Components/BookingWidget.jsx";
 import PlaceGallery from "../Components/PlaceGallery.jsx";
 import AddressLink from "../Helpers/AddressLink.jsx";
+import { UserContext } from "../Context/UserContext.jsx";
 
 const PlacePage = () => {
   const {id} = useParams();
   const [place,setPlace] = useState(null);
+  const {token}=useContext(UserContext)
   useEffect(() => {
     if (!id) {
       return;
     }
-    axios.get(`/places/${id}`).then(response => {
+    axios.get(`/places/${id}`,{headers:{"content-type":"application/json",Authorization:`Bearer ${token}`}}).then(response => {
       setPlace(response.data);
     });
   }, [id]);

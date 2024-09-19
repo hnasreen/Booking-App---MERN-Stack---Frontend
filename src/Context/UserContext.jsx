@@ -1,6 +1,5 @@
 import {createContext, useEffect, useState} from "react";
 import axios from "axios";
-import Cookies from "js-cookie"; 
 
 
 export const UserContext = createContext({});
@@ -8,35 +7,47 @@ export const UserContext = createContext({});
 export const UserContextProvider = ({children}) => {
   const [user,setUser] = useState(null);
   const [ready,setReady] = useState(false);
-
+  const [token, setToken] = useState(localStorage.getItem('token'));
+  
    // Fetch profile if user is null
    useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const token = Cookies.get('token'); // Get the token from cookies
+        
         if (!token) {
+          setUser(null);
           setReady(true);
           return; // No token, skip fetching profile
         }
-        const { data } = await axios.get('/profile');
+        // console.log("Fetching profile with token:", token);
+        const { data } = await axios.get('/profile', {
+          headers: { "content-type":"application/json",Authorization: `Bearer ${token}` },});
         setUser(data);
       } catch (error) {
-        if (error.response && error.response.status !== 403) {
-        console.error("Failed to fetch profile:", error);
+        if (error.response) {
+          if (error.response.status === 401) {
+            localStorage.removeItem("token");  
+            setToken(null);
+            setUser(null);
+          }
+           else if (error.response.status === 403){
+            setUser(null);
+          }
+          else {
+            console.error("Failed to fetch profile:", error);
+          }
+        } else {
+          console.error("An error occurred while fetching profile:", error);
         }
       } finally {
         setReady(true);
       }
     };
 
-    if (!user) {
-      fetchProfile();
-    } else {
-      setReady(true);
-    }
-  }, [user]);
+    fetchProfile();
+  }, []);
   return (
-    <UserContext.Provider value={{user,setUser,ready}}>
+    <UserContext.Provider value={{user,setUser,ready,token,setToken}}>
       {children}
     </UserContext.Provider>
   );

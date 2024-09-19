@@ -1,15 +1,31 @@
 import {Link, useParams} from "react-router-dom";
 import AccountNav from "../Helpers/AccountNav.jsx";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import PlaceImg from "../Helpers/PlaceImg.jsx";
+import { UserContext } from "../Context/UserContext.jsx";
+
 const PlacesPage = () => {
   const [places,setPlaces] = useState([]);
+  const {token}=useContext(UserContext)
   useEffect(() => {
-    axios.get('/user-places').then(({data}) => {
-      setPlaces(data);
-    });
-  }, []);
+    if (!token) return;
+    const fetchPlaces = async () => {
+      try {
+        const { data } = await axios.get('/user-places', {
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setPlaces(data);
+      } catch (error) {
+        console.error("Failed to fetch places:", error);
+      }
+    };
+
+    fetchPlaces();
+  }, [token]);
   return (
     <div>
       <AccountNav />

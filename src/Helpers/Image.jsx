@@ -1,11 +1,14 @@
-const Image = ({src,...rest}) => {
-  // console.log(src)
-    src = src && src.includes('https://')
-      ? src
-      : `http://localhost:8080/uploads/${src}`;
-    return (
-      <img {...rest} src={src} alt={''} />
-    );
-  }
+const Image = ({ src, ...rest }) => {
 
-  export default Image
+  const cloudinaryBaseURL = `https://res.cloudinary.com/${import.meta.env.REACT_APP_CLOUD_NAME_CLOUDINARY}/image/upload/`;
+
+  const imageUrl = src && src.includes('https://') 
+    ? src 
+    : `${cloudinaryBaseURL}${src}`;
+
+  return (
+    <img {...rest} src={imageUrl} alt={rest.alt || ''} />
+  );
+};
+
+export default Image;

@@ -12,11 +12,13 @@ import PlacesFormPage from "../src/Pages/PlacesFormPage.jsx";
 import PlacePage from "../src/Pages/PlacePage.jsx";
 import BookingsPage from "../src/Pages/BookingsPage.jsx";
 import BookingPage from "../src/Pages/BookingPage.jsx";
+import { useEffect, useState } from 'react';
 
-axios.defaults.baseURL = 'http://localhost:8080/api';
+axios.defaults.baseURL = 'https://booking-mern-stack-app-backend.onrender.com/api';
 axios.defaults.withCredentials = true;
 
 const App = () => {
+
   return (
     <UserContextProvider>
       <Routes>

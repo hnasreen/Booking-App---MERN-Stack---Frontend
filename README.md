@@ -4,12 +4,12 @@
 The project, called PickYourStay, is a hotel room booking application. It allows users to register, post their accommodations (such as hotels or resorts), and view and book stays listed by others.
 
 # User Registration and Authentication:
-Users can sign up and create accounts within the app. For authentication, the system checks if the email is registered, and upon successful login, a token is generated. This token is stored in browser cookies and is used to authenticate users for actions like booking stays and uploading accommodations.
+Users can sign up and create accounts within the app. For authentication, the system checks if the email is registered, and upon successful login, a token is generated. This token is stored in browser local Storage and is used to authenticate users for actions like booking stays and uploading accommodations.
 
 # Listing Accommodations:
 Registered users can list their properties, such as hotels, resorts, or any type of accommodation. They have the option to upload accommodation photos either via:
 
-> Photo links (using the image-downloader library)
+> Photo links (using the cloudinary library)
 > Direct file uploads (using multer)
 
 # Booking Process:
@@ -24,4 +24,5 @@ The backend is developed using Node.js and Express.js to handle server-side logi
 # Data Storage:
 The application stores data using MongoDB, which manages user information, accommodation details, bookings, and more.
 
-# BackEnd github Source Code Link:[ ](https://github.com/hnasreen/Booking-App---MERN-Stack---Backend)
+# BackEnd github Source Code Link: https://github.com/hnasreen/Booking-MERN-Stack-App---Backend
+

@@ -1,41 +1,42 @@
 import axios from "axios";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import Image from "./Image.jsx";
+import { UserContext } from "../Context/UserContext.jsx";
 
 export default function PhotosUploader({addedPhotos,onChange}) {
   const [photoLink,setPhotoLink] = useState('');
+  const {token}=useContext(UserContext)
 
   async function addPhotoByLink(ev) {
     ev.preventDefault();
-    const {data:filename} = await axios.post('/upload-by-link', {link: photoLink});
+    const { data: { url } } = await axios.post('/upload-by-link', { link: photoLink },{
+      headers: {"content-type":"application/json", Authorization: `Bearer ${token}` }});
     onChange(prev => {
-      return [...prev, filename];
+      return [...prev, url];
     });
     setPhotoLink('');
   }
   function uploadPhoto(ev) {
-    const files = ev.target.files;
+    const files = ev.target.files[0];
     const data = new FormData();
-    for (let i = 0; i < files.length; i++) {
-      data.append('photos', files[i]);
-    }
+      data.append('photos', files);
+    // console.log("photouploadetoken",token)
     axios.post('/upload', data, {
-      headers: {'Content-type':'multipart/form-data'}
+      headers: {'Content-type':'multipart/form-data'},
     }).then(response => {
-      const {data:filenames} = response;
+      const {data:urls} = response;
       onChange(prev => {
-        return [...prev, ...filenames];
+        return [...prev, ...urls];
       });
     })
   }
-  function removePhoto(ev,filename) {
+  function removePhoto(ev,url) {
     ev.preventDefault();
-    onChange([...addedPhotos.filter(photo => photo !== filename)]);
-    // console.log(...addedPhotos,'addedPhotos')
+    onChange([...addedPhotos.filter(photo => photo !== url)]);
   }
-  function selectAsMainPhoto(ev,filename) {
+  function selectAsMainPhoto(ev,url) {
     ev.preventDefault();
-    onChange([filename,...addedPhotos.filter(photo => photo !== filename)]);
+    onChange([url,...addedPhotos.filter(photo => photo !== url)]);
   }
   return (
     <>

@@ -1,17 +1,38 @@
 import AccountNav from "../Helpers/AccountNav.jsx";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import PlaceImg from "../Helpers/PlaceImg.jsx";
 import {Link} from "react-router-dom";
 import BookingDates from "../Helpers/BookingDates.jsx";
+import { UserContext } from "../Context/UserContext.jsx";
 
 const BookingsPage = () => {
   const [bookings,setBookings] = useState([]);
+  const {token} = useContext(UserContext)
   useEffect(() => {
-    axios.get('/bookings').then(response => {
-      setBookings(response.data);
-    });
-  }, []);
+    const fetchBookings = async () => {
+      try {
+        if (!token) {
+          console.error("Token is missing or invalid.");
+          return;
+        }
+        console.log("Fetching bookings with token:", token);
+
+        const response = await axios.get('/bookings', {
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Bookings fetched:", response.data);
+        setBookings(response.data);
+      } catch (error) {
+        console.error("Failed to fetch bookings:", error);
+      }
+    };
+
+    fetchBookings();
+  }, [token]);
   return (
     <div>
       <AccountNav />

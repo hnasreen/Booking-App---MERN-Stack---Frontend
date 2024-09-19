@@ -11,7 +11,7 @@ const BookingWidget = ({place}) => {
   const [name,setName] = useState('');
   const [phone,setPhone] = useState('');
   const [redirect,setRedirect] = useState('');
-  const {user} = useContext(UserContext);
+  const {user,token} = useContext(UserContext);
 
   useEffect(() => {
     if (user) {
@@ -34,7 +34,8 @@ const BookingWidget = ({place}) => {
       checkIn,checkOut,numberOfGuests,name,phone,
       place:place._id,
       price:numberOfNights * place.price,
-    });
+    }, {
+      headers: { "content-type":"application/json",Authorization: `Bearer ${token}` }});
     // console.log(response?.data)
     const bookingId = response?.data._id;
     setRedirect(`/account/bookings/${bookingId}`);

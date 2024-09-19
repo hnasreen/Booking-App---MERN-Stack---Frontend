@@ -1,5 +1,5 @@
 import { Link, Navigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState,useEffect } from "react";
 import axios from "axios";
 import { UserContext } from "../Context/UserContext.jsx";
 
@@ -7,7 +7,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
-  const { setUser } = useContext(UserContext);
+  const { setUser,setToken } = useContext(UserContext);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -15,11 +15,22 @@ const LoginPage = () => {
       const { data } = await axios.post('/login', { email, password });
       setUser(data.userDoc);
       alert('Login successful');
+      localStorage.setItem("token",data?.data)
+      // console.log("LoginToken:",data.data)
+      setToken(data.data);
       setRedirect(true);
     } catch (error) {
       alert('Login failed');
     }
   }
+
+   // Use effect to handle the redirect once the state changes
+   useEffect(() => {
+    if (redirect) {
+      // If redirect is true, navigate to the home page
+      <Navigate to={'/'} />
+    }
+  }, [redirect]); 
 
   if (redirect) {
     return <Navigate to={'/'} />
