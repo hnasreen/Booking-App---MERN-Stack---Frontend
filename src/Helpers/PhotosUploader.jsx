@@ -20,11 +20,10 @@ export default function PhotosUploader({addedPhotos,onChange}) {
     const files = ev.target.files[0];
     const data = new FormData();
       data.append('photos', files);
-    // console.log("photouploadetoken",token)
     axios.post('/upload', data, {
       headers: {'Content-type':'multipart/form-data'},
     }).then(response => {
-      const url = response.data.url;
+      const url = response.data.secure_url;
       onChange(prev => {
         return [...prev, url];
       });
