@@ -24,7 +24,7 @@ export default function PhotosUploader({addedPhotos,onChange}) {
     axios.post('/upload', data, {
       headers: {'Content-type':'multipart/form-data'},
     }).then(response => {
-      const url = response.data;
+      const url = response.data.secure_url;
       onChange(prev => {
         return [...prev, ...url];
       });
